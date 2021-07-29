@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:six_jars_saving/src/controllers/onboarding_controller.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:six_jars_saving/src/const/colors.dart' as COLOR;
+import '../controllers/onboarding_controller.dart';
 
 class OnBoardingScreen extends StatelessWidget {
-  final controller = OnBoardingController();
+  final _controller = OnBoardingController();
 
   @override
   Widget build(BuildContext context) {
@@ -13,17 +13,33 @@ class OnBoardingScreen extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
+            Positioned(
+              top: 20,
+              right: 20,
+              child: TextButton(
+                onPressed: () {
+                  //  Skip onboarding screen
+                },
+                child: Text(
+                  'Skip',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    color: COLOR.PRIMARY_COLOR,
+                  ),
+                ),
+              ),
+            ),
             PageView.builder(
-                controller: controller.pageController,
-                onPageChanged: controller.selectedPageIndex,
-                itemCount: controller.onboardingPages.length,
+                controller: _controller.pageController,
+                onPageChanged: _controller.selectedPageIndex,
+                itemCount: _controller.onboardingPages.length,
                 itemBuilder: (context, index) {
                   return Container(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.network(
-                          controller.onboardingPages[index].imageAsset,
+                        Image.asset(
+                          _controller.onboardingPages[index].imageAsset,
                           width: 200,
                           height: 200,
                         ),
@@ -31,7 +47,7 @@ class OnBoardingScreen extends StatelessWidget {
                           height: 32.0,
                         ),
                         Text(
-                          controller.onboardingPages[index].title,
+                          _controller.onboardingPages[index].title,
                           style: TextStyle(
                               fontSize: 24, fontWeight: FontWeight.w500),
                         ),
@@ -41,7 +57,7 @@ class OnBoardingScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 32.0),
                           child: Text(
-                            controller.onboardingPages[index].description,
+                            _controller.onboardingPages[index].description,
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 18),
                           ),
@@ -55,14 +71,14 @@ class OnBoardingScreen extends StatelessWidget {
               left: 30.0,
               child: Row(
                 children: List.generate(
-                  controller.onboardingPages.length,
+                  _controller.onboardingPages.length,
                   (index) => Obx(() {
                     return Container(
                       margin: EdgeInsets.all(4.0),
                       width: 12,
                       height: 12,
                       decoration: BoxDecoration(
-                        color: controller.selectedPageIndex == index
+                        color: _controller.selectedPageIndex == index
                             ? COLOR.PRIMARY_COLOR
                             : Colors.grey,
                         shape: BoxShape.circle,
@@ -78,12 +94,11 @@ class OnBoardingScreen extends StatelessWidget {
               child: FloatingActionButton(
                 elevation: 0,
                 onPressed: () {
-                  controller.forwardAction();
+                  _controller.forwardAction();
                 },
                 child: Obx(() {
-                    return Text(controller.isLastPage ? 'Start' : 'Next');
-                  }
-                ),
+                  return Text(_controller.isLastPage ? 'Start' : 'Next');
+                }),
               ),
             )
           ],
